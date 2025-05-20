@@ -54,8 +54,8 @@ pip install --user selenium
 ```
 
 Download and extract the correct ChromeDriver zip file [from
-here](https://sites.google.com/a/chromium.org/chromedriver/downloads) to this
-folder.
+here](https://googlechromelabs.github.io/chrome-for-testing/#stable) to this
+folder and name the folder `chromedriver`.
 
 Download Google Chrome from https://www.google.com/chrome/ and install it on
 your computer.

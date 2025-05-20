@@ -11,6 +11,9 @@ import requests
 from getpass import getpass
 from selenium import webdriver
 from optparse import OptionParser
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 PY3 = sys.version_info[0] == 3
 
@@ -30,9 +33,10 @@ def fetch_activation_bytes(username, password, options):
     # Step 0
     opts = webdriver.ChromeOptions()
     opts.add_argument("user-agent=Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko")
-    opts.add_argument('--headless')
+    opts.add_argument('--headless=new')
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-dev-shm-usage')
+    opts.add_argument("--remote-debugging-port=9222")
 
     # Step 1
     if '@' in username:  # Amazon login using email address
@@ -87,9 +91,9 @@ def fetch_activation_bytes(username, password, options):
         else:
             chromedriver_path = "./chromedriver"
 
-
+        service = Service(executable_path = chromedriver_path)
         driver = webdriver.Chrome(options=opts,
-                                  executable_path=chromedriver_path)
+                                  service=service)
 
     query_string = urlencode(payload)
     url = login_url + query_string
@@ -99,12 +103,14 @@ def fetch_activation_bytes(username, password, options):
         print("[!] Running in DEBUG mode. You will need to login in a semi-automatic way, wait for the login screen to show up ;)")
         time.sleep(32)
     else:
-        search_box = driver.find_element_by_id('ap_email')
+        search_box = driver.find_element(By.ID, 'ap_email')
         search_box.send_keys(username)
-        search_box = driver.find_element_by_id('ap_password')
+        search_box.submit()
+        time.sleep(2)
+        search_box = driver.find_element(By.ID, 'ap_password')
         search_box.send_keys(password)
         search_box.submit()
-        time.sleep(2)  # give the page some time to load
+        time.sleep(5)  # give the page some time to load
 
     # Apparently, automated logins get detected now. The user receives a
     # one-time password via email and is asked to type it into a textbox.
