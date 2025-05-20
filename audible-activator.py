@@ -19,7 +19,7 @@ if PY3:
     from urllib.parse import urlparse, parse_qsl
 else:
     from urllib import urlencode
-    from urlparse import urlparse, parse_qsl
+    #from url.home.janparse import urlparse, parse_qsl
 
 
 def fetch_activation_bytes(username, password, options):
